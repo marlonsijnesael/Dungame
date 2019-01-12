@@ -1,0 +1,91 @@
+fileFormatVersion: 2
+guid: e3435c0fc6124bf4e9cce8fd9077b37c
+ScriptedImporter:
+  fileIDToRecycleName:
+    100000: testbrick/testbrick
+    400000: testbrick/testbrick/Transform
+    2100000: mat.New_Graph
+    2300000: testbrick/testbrick/MeshRenderer
+    2800000: New_Graph_baseColor
+    2800002: New_Graph_normal
+    2800004: New_Graph_metallic
+    2800006: New_Graph_height
+    3300000: testbrick/testbrick/MeshFilter
+    11400000: sbsar
+    11400002: graph0
+    13500000: testbrick/testbrick/SphereCollider
+    100100000: testbrick
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 232528478, guid: 43a8bbf65be290d44ba52b94476242b9, type: 3}
+  version: 13
+  mGraphInstanceData:
+  - graphLabel: New_Graph
+    prototypeName: New_Graph
+    graphDescIndex: 0
+    generateAllOutputs: 0
+    generateMipMaps: 1
+    preset: " <sbspreset pkgurl=\"pkg://New_Graph\" label=\"\" >\n  <presetinput identifier=\"$randomseed\"
+      uid=\"227089467\" type=\"4\" value=\"1353\" />\n </sbspreset>\n"
+    shaderName: Standard
+    outputNames: baseColor,normal,metallic,height
+    texturePackingList:
+    - outputName: baseColor
+      alphaSource: baseColor
+    - outputName: normal
+      alphaSource: normal
+    - outputName: roughness
+      alphaSource: roughness
+    - outputName: metallic
+      alphaSource: smoothness
+    - outputName: height
+      alphaSource: height
+    textureParameters:
+    - textureName: New_Graph_roughness
+      wrapMode: 0
+      filterMode: 1
+      aniso: 1
+    - textureName: New_Graph_baseColor
+      wrapMode: 0
+      filterMode: 1
+      aniso: 1
+    - textureName: New_Graph_normal
+      wrapMode: 0
+      filterMode: 1
+      aniso: 1
+    - textureName: New_Graph_metallic
+      wrapMode: 0
+      filterMode: 1
+      aniso: 1
+    - textureName: New_Graph_height
+      wrapMode: 0
+      filterMode: 1
+      aniso: 1
+    colorSpaceList:
+    - outputName: baseColor
+      bLinear: 0
+    - outputName: normal
+      bLinear: 1
+    - outputName: roughness
+      bLinear: 1
+    - outputName: metallic
+      bLinear: 1
+    - outputName: height
+      bLinear: 1
+    inputTextureMap: []
+    targetSettingList:
+    - label: 
+      bLockRatio: 1
+      bHighQuality: 0
+      textureWidth: 0
+      textureHeight: 0
+      textureFormat: 0
+      bGenerateOnLoad: 1
+    material: {fileID: 2100000, guid: e3435c0fc6124bf4e9cce8fd9077b37c, type: 3}
+    generatedTextures:
+    - {fileID: 2800000, guid: e3435c0fc6124bf4e9cce8fd9077b37c, type: 3}
+    - {fileID: 2800002, guid: e3435c0fc6124bf4e9cce8fd9077b37c, type: 3}
+    - {fileID: 2800004, guid: e3435c0fc6124bf4e9cce8fd9077b37c, type: 3}
+    - {fileID: 2800006, guid: e3435c0fc6124bf4e9cce8fd9077b37c, type: 3}

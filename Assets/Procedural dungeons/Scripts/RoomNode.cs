@@ -5,6 +5,7 @@ using UnityEngine;
 /// Class contains all data for a room/node on the grid.
 /// this class is used to store data for the procedural generation of our map
 /// </summary>
+[System.Serializable]
 public class RoomNode {
 
     //position on node grid
@@ -35,6 +36,7 @@ public class RoomNode {
 
     //type for room instantiation
     public int type = 0;    //type 0 == empty node, type 1 = room
+    public int interriorType = 0;
 
     public List<RoomNode> Neighbours = new List<RoomNode>();
 

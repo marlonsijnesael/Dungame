@@ -6,13 +6,16 @@ using UnityEngine;
 public class Doors : MonoBehaviour {
 
     public GameObject doorEast, doorWest, doorNorth, doorSouth;
-
     public GameObject wallEast, wallWest, wallNorth, wallSouth;
 
-    public bool hasDoorEast, hasDoorWest, hasDoorNorth, hasDoorSouth;
-
+    //  public bool hasDoorWest, hasDoorNorth, hasDoorSouth;
+    public bool hasDoorNorth, hasDoorEast, hasDoorSouth, hasDoorWest;
+    public int[] doorDirections = { 0, 0, 0, 0 };
     public GameObject interior;
     public Transform interiorSpawnPoint;
+
+    [SerializeField]
+    public RoomNode nodeData;
 
     //check if room should have an interior 
     public void SetInterior(GameObject _interior) {
@@ -23,11 +26,14 @@ public class Doors : MonoBehaviour {
             }
         }
 
+    public void SetBools(int[] _directionsInt) {
+        doorDirections = _directionsInt;
+        }
+
     //checks if doors or walls should be spawned 
     //this is kind of an ugly and is due to be replaced with a more elegenat solution
     public void SetDoors() {
-
-        if (!hasDoorWest) {
+        if (doorDirections[3] == 0) {
             wallWest.SetActive(true);
             doorWest.SetActive(false);
             } else {
@@ -35,27 +41,28 @@ public class Doors : MonoBehaviour {
             doorWest.SetActive(true);
 
             }
-        if (!hasDoorEast) {
+        if (doorDirections[1] == 0) {
             wallEast.SetActive(true);
             doorEast.SetActive(false);
             } else {
             wallEast.SetActive(false);
             doorEast.SetActive(true);
             }
-        if (!hasDoorNorth) {
+        if (doorDirections[0] ==0) {
             wallNorth.SetActive(true);
             doorNorth.SetActive(false);
             } else {
             wallNorth.SetActive(false);
             doorNorth.SetActive(true);
             }
-        if (!hasDoorSouth) {
+        if (doorDirections[2] == 0) {
             wallSouth.SetActive(true);
             doorSouth.SetActive(false);
             } else {
             wallSouth.SetActive(false);
             doorSouth.SetActive(true);
             }
+
 
         }
     }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using System.IO;
 
 /// <summary>
 /// this class is used to fill the created 2d node grid with rooms and walls
@@ -30,13 +31,39 @@ public class FillMap : MonoBehaviour {
 
     private void Start() {
 
-        _gridReference = GetComponent<GridGenerator>();
-        CreateRooms();
+        if (SpawnSettings._instance.switchInput) {
+            CreateRoomsFromJSON();
+            } else {
+            _gridReference = GetComponent<GridGenerator>();
+            CreateRoomsProcedurally();
+            }
         }
+
+    public void CreateRoomsFromJSON() {
+        SaveDataClass loadedSave;
+        GameObject spawnObj = SpawnSettings._instance.transform.gameObject;
+        using (StreamReader stream = new StreamReader(SpawnSettings._instance.loadingPath)) {
+            string json = stream.ReadToEnd();
+            loadedSave = JsonUtility.FromJson<SaveDataClass>(json);
+            Debug.Log(loadedSave.amountOfRooms);
+            }
+
+        foreach (CompressedRoomNode cRoomNode in loadedSave.cRoomNodes) {
+            GameObject room = Instantiate(roomPrefab[cRoomNode.interriorType]);
+            room.transform.position = new Vector3(cRoomNode.position.x, 0, cRoomNode.position.y);
+            room.transform.SetParent(spawnObj.transform);
+            room.GetComponent<Doors>().SetBools(cRoomNode.doorDirections);
+            room.GetComponent<Doors>().SetDoors();
+            }
+        GameObject player = Instantiate(playerPrefab);
+        PlayerSpawnPoint = spawnObj.transform.GetChild(Random.Range(0, SpawnSettings._instance.transform.childCount - 1)).position;
+        player.transform.position = new Vector3(PlayerSpawnPoint.x, PlayerSpawnPoint.y + 10, PlayerSpawnPoint.z);
+        }
+
 
     //Creates a path between two random nodes and repeats this proces for the amount of iterations wanted. 
     //when This is done, it determines if the node is a Room or a wall and Instantiates the right prefab.
-    public void CreateRooms() {
+    public void CreateRoomsProcedurally() {
 
         //start at one and end at -1 to make sure that the level is always closed at the borders
         Vector2Int room1 = new Vector2Int(Random.Range(1, _gridReference.arraySizeX - 1), Random.Range(1, _gridReference.arraySizeY - 1));
@@ -65,7 +92,8 @@ public class FillMap : MonoBehaviour {
 
                 }
             if (room.type == 1) {
-                InstantiateNode(room, roomPrefab[Random.Range(0, roomPrefab.Length)], true);
+                int roomType = Random.Range(0, roomPrefab.Length);
+                InstantiateNode(room, roomPrefab[roomType], true, roomType);
                 if (Random.value > 0.7f) {
                     EnemySpawnPoint = new Vector3(room.worldPos.x, room.worldPos.y + 5, room.worldPos.z);
                     GameObject enemy = Instantiate(enemeyPrefab);
@@ -74,7 +102,12 @@ public class FillMap : MonoBehaviour {
                     }
                 SetDoors(room);
                 } else if (room.type == 0) {
-                InstantiateNode(room, wallPrefab, false);
+                InstantiateNode(room, wallPrefab, false, -1);
+                }
+            }
+        for (int c = 0; c < this.transform.childCount; c++) {
+            if (this.transform.GetChild(c).childCount == 0) {
+                Destroy(this.transform.GetChild(c).gameObject);
                 }
             }
         //instantiate player when all rooms are created
@@ -95,10 +128,11 @@ public class FillMap : MonoBehaviour {
         }
 
     //function to instantiate the nodes without code repitition
-    public void InstantiateNode(RoomNode _room, GameObject _prefab, bool _filled) {
+    public void InstantiateNode(RoomNode _room, GameObject _prefab, bool _filled, int _roomType) {
         _room.self = Instantiate(_prefab);
         _room.self.transform.SetParent(this.transform);
         _room.isFilled = _filled;
+        _room.interriorType = _roomType;
         _room.InitSelf();
         }
 
@@ -118,6 +152,7 @@ public class FillMap : MonoBehaviour {
     //checks if room needs doors/walls
     public void SetDoors(RoomNode _node) {
         Doors doorScript = _node.self.GetComponent<Doors>();
+        doorScript.nodeData = _node;
         for (int x = -1; x <= 1; x++) {
             for (int y = -1; y <= 1; y++) {
                 //check all nodes left, right, up and down from the current node
@@ -133,16 +168,20 @@ public class FillMap : MonoBehaviour {
                         //check types of surrounding nodes and determine if there should be a wall
                         if (NeighbournNode.type != 0) {
                             if (x == 1 && y == 0) {
-                                doorScript.hasDoorEast = true;
+                                //doorScript.hasDoorEast = true;
+                                doorScript.doorDirections[1] = 1;
                                 }
                             if (x == -1 && y == 0) {
-                                doorScript.hasDoorWest = true;
+                                //doorScript.hasDoorWest = true;
+                                doorScript.doorDirections[3] = 1;
                                 }
                             if (x == 0 && y == 1) {
-                                doorScript.hasDoorNorth = true;
+                                //doorScript.hasDoorNorth = true;
+                                doorScript.doorDirections[0] = 1;
                                 }
                             if (x == 0 && y == -1) {
-                                doorScript.hasDoorSouth = true;
+                                //doorScript.hasDoorSouth = true;
+                                doorScript.doorDirections[2] = 1;
                                 }
                             }
 
@@ -154,7 +193,7 @@ public class FillMap : MonoBehaviour {
         // doorScript.SetInterior(interiors[Random.Range(0, interiors.Length)]);
         }
 
-    //A* pathfinding algoritm learned from tutorials:
+    //A* pathfinding algorithm
     public void FindPath(RoomNode startNode, RoomNode targetNode) {
         List<RoomNode> openSet = new List<RoomNode>();
         HashSet<RoomNode> closedSet = new HashSet<RoomNode>();

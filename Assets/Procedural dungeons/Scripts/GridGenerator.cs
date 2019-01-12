@@ -28,7 +28,9 @@ public class GridGenerator : MonoBehaviour {
 
 
     private void Awake() {
-
+        if (SpawnSettings._instance.switchInput) {
+            return;
+            }
         //retrieve values from the settings instance
         nodeDiameter = SpawnSettings._instance.nodeDiameter;
         gridWorldSizeX = SpawnSettings._instance.gridWorldSizeX;

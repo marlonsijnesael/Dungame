@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System;
 
 
 /// <summary>
@@ -9,13 +10,14 @@ using UnityEngine.UI;
 /// </summary>
 public class GameManager : MonoBehaviour {
 
-
     public GameObject overViewCamera;
     public bool useOverview = false;
     public GameObject player;
     public bool useDeveloperTool;
     public Button cameraButton;
     public GameObject Menu;
+    public GameObject spawner;
+    public InputField saveName;
 
     private void Start() {
         Cursor.visible = useDeveloperTool;
@@ -34,6 +36,10 @@ public class GameManager : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.Escape)) {
             Quit();
             }
+
+        if (Input.GetKeyDown(KeyCode.V)) {
+            ConvertToJSON(SaveDungeonStructure(spawner));
+            }
         }
 
     //resumes the game by closing the pause menu and setting the timescale back to 1
@@ -46,12 +52,19 @@ public class GameManager : MonoBehaviour {
         Application.Quit();
         }
 
+    public void QuitToMainMenu() {
+        Destroy(SpawnSettings._instance.gameObject);
+        SceneManager.LoadScene(0);
+        }
+
     //creates a new dungeon by resetting the scene
     public void CreateNewDungeon() {
         SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex);
         Time.timeScale = 1;
         }
-
+    public void SaveDungeon() {
+        ConvertToJSON(SaveDungeonStructure(spawner));
+        }
     //move the camera by using aswd or the arrow keys and zoom in by using the scrollwheel
     public void MoveCamera() {
         if (useOverview) {
@@ -71,7 +84,34 @@ public class GameManager : MonoBehaviour {
             player = GameObject.FindGameObjectWithTag("Player");
             }
 
-        player.SetActive(!useOverview);
+        if (player != null) {
+            player.SetActive(!useOverview);
+            }
         }
 
+    public static SaveDataClass SaveDungeonStructure(GameObject _spawner) {
+        var result = new SaveDataClass();
+        result.amountOfRooms = _spawner.transform.childCount;
+        result.cRoomNodes = new CompressedRoomNode[result.amountOfRooms];
+
+        for (int i = 0; i < _spawner.transform.childCount; i++) {
+            Doors childDoors = _spawner.transform.GetChild(i).gameObject.GetComponent<Doors>();
+            result.cRoomNodes[i] = new CompressedRoomNode(childDoors.nodeData.interriorType, new Vector2(childDoors.nodeData.worldPos.x, childDoors.nodeData.worldPos.z), childDoors.doorDirections);
+
+            Debug.Log(_spawner.transform.childCount);
+            }
+
+        return result;
+        }
+
+    public void ConvertToJSON(SaveDataClass _saveData) {
+        string fileName;
+        if (saveName.text == "" || saveName.text == null) {
+             fileName = "saveData" + DateTime.Now.ToString("dd-MM-yyyy") + ".JSON";
+            } else {
+            fileName = saveName.text + ".JSON";
+            }
+        System.IO.File.WriteAllText("Assets/Resources/LevelData/" + fileName, JsonUtility.ToJson(_saveData, false));
+   
+        }
     }
