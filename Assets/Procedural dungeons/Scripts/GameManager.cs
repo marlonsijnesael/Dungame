@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using System;
 
 
+
 /// <summary>
 /// This class enables the user to switch between perspectives and look at the created dungeon from a top-down perspective.
 /// This in turn enables the user to review the dungeon in play mode without having to turn to the scene view.
@@ -111,7 +112,9 @@ public class GameManager : MonoBehaviour {
             } else {
             fileName = saveName.text + ".JSON";
             }
-        System.IO.File.WriteAllText("Assets/Resources/LevelData/" + fileName, JsonUtility.ToJson(_saveData, false));
-   
+       // System.IO.File.WriteAllText("Assets/Resources/LevelData/" + fileName, JsonUtility.ToJson(_saveData, false));
+        string tmpPath = System.IO.Path.Combine(Application.streamingAssetsPath, fileName);
+        Debug.Log(tmpPath);
+        System.IO.File.WriteAllText(tmpPath, JsonUtility.ToJson(_saveData, false));
         }
     }
