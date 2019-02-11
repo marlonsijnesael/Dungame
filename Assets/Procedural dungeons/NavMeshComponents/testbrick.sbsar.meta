@@ -15,6 +15,7 @@ ScriptedImporter:
     11400002: graph0
     13500000: testbrick/testbrick/SphereCollider
     100100000: testbrick
+    2186277476908879412: ImportLogs
   externalObjects: {}
   userData: 
   assetBundleName: 
@@ -83,9 +84,5 @@ ScriptedImporter:
       textureHeight: 0
       textureFormat: 0
       bGenerateOnLoad: 1
-    material: {fileID: 2100000, guid: e3435c0fc6124bf4e9cce8fd9077b37c, type: 3}
-    generatedTextures:
-    - {fileID: 2800000, guid: e3435c0fc6124bf4e9cce8fd9077b37c, type: 3}
-    - {fileID: 2800002, guid: e3435c0fc6124bf4e9cce8fd9077b37c, type: 3}
-    - {fileID: 2800004, guid: e3435c0fc6124bf4e9cce8fd9077b37c, type: 3}
-    - {fileID: 2800006, guid: e3435c0fc6124bf4e9cce8fd9077b37c, type: 3}
+    material: {instanceID: 0}
+    generatedTextures: []
